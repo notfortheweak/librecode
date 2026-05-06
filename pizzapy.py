@@ -1,6 +1,8 @@
 from tkinter import *
 from random import randint
 
+
+#define costs of the pizza and toppings
 costSmall = 7.50
 costMedium = 10.00
 costLarge = 15.00
@@ -10,6 +12,7 @@ costMushrooms = 1.25
 costPizza = 0.00
 costToppings = 0.00
 MNTax = float(0.06875)
+
 
 def Close():
     frmOrder.destroy()
@@ -29,7 +32,7 @@ def Reset():
 def Process():
     strCustName = entCustName.get()
     lblCustCopy["text"] = strCustName
-    lblOrderNumber["text"] = f"Order Number: {randint(1000, 9999)}"
+    lblOrderNumber["text"] = f"Order Number: {randint(1000, 2000)}"
     costTotal = int((costPizza + costToppings) * 1.06875)
 
 
@@ -50,12 +53,12 @@ Size=StringVar()
 
 radSize=Radiobutton(variable=Size, text="Small", value="small", fg="navy", bg="sky blue", font="Arial 12")
 radSize.place(x=20, y=280)
-
 radSize=Radiobutton(variable=Size, text="Medium", value="medium", fg="navy", bg="sky blue", font="Arial 12")
 radSize.place(x=20, y=330)
-
 radSize=Radiobutton(variable=Size, text="Large", value="large", fg="navy", bg="sky blue", font="Arial 12")
 radSize.place(x=20, y=380)
+#set the default value of the size to small using the varible=Size
+Size.set("small")
 
 #Entry Box Creation
 entCustName = Entry(font="Arial 14", bg="white", fg="navy", width=30)
@@ -70,26 +73,29 @@ lblCustCopy = Label(text="", font="Arial 12", bg="sky blue", fg="navy")
 lblCustCopy.place(x=100, y=180)
 lblSize = Label(text="Size", font="Arial 12", bg="sky blue", fg="navy")
 lblSize.place(x=20, y=220)
+lblSizeCost = Label(text='Size Cost: $0.00', font="Arial 12", bg="sky blue", fg="navy")
+lblSizeCost.place(x=600, y=400)
 lblToppings = Label(text='Toppings', font="Arial 12", bg="sky blue", fg="navy")
 lblToppings.place(x=300, y=220)
 lblToppingsCost = Label(text='Toppings Cost: $0.00', font="Arial 12", bg="sky blue", fg="navy")
-lblToppingsCost.place(x=300, y=430)
+lblToppingsCost.place(x=600, y=440)
 lblOrderNumber = Label(text='Order Number', font="Arial 12", bg="sky blue", fg="navy")
-lblOrderNumber.place(x=600, y=280)
+lblOrderNumber.place(x=1150, y=180)
 lblPaymentMethod = Label(text='Payment Method', font="Arial 12", bg="sky blue", fg="navy")
 lblPaymentMethod.place(x=1150, y=220)
-lblCost = Label(text="Cost: $0.00", font="Arial 12", bg="sky blue", fg="navy")
-lblCost.place(x=600, y=320)
+#lblCost = Label(text="Cost: $0.00", font="Arial 12", bg="sky blue", fg="navy")
+#lblCost.place(x=600, y=320)
 lblMNTax = Label(text="MN Sales Tax:6.875 ", font="Arial 12", bg="sky blue", fg="navy")
-lblMNTax.place(x=600, y=360)
+lblMNTax.place(x=600, y=480)
 costTotal = Label(text=f"Total: $0.00", font="Arial 12", bg="sky blue", fg="navy")
-costTotal.place(x=600, y=400)
+costTotal.place(x=600, y=520)
 
 
 #Payment Method List Box
 lstPaymentMethod = Listbox(font="Arial 12", bg="white", fg="navy")
 lstPaymentMethod.place(x=1150, y=280)
 lstPaymentMethod.insert(END, "Cash")
+lstPaymentMethod.selection_set(0)
 lstPaymentMethod.insert(END, "Credit Card")
 lstPaymentMethod.insert(END, "Mobile Pay")
 lstPaymentMethod.insert(END, "Crypto")
@@ -108,11 +114,10 @@ chkToppings2.place(x=300, y=380)
 frmOrder.title("Not For The Weak Pizzas")
 btnReset = Button(text="Reset", font="Arial 12", bg="navy", fg="white", width=8, command=Reset)
 btnClose = Button(text="Close", font="Arial 12", bg="navy", fg="white", width=8, command=Close)
-btnReset.place(x=650, y=500)
-btnClose.place(x=850, y=500)
-
+btnReset.place(x=650, y=600)
+btnClose.place(x=850, y=600)
 btnProcess= Button(text="Process Order", font="Arial 12", bg="navy", fg="white", width=15, command=Process)
-btnProcess.place(x=300, y=500)
+btnProcess.place(x=300, y=600)
 entCustName.focus()
 
 
