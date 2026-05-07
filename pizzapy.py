@@ -2,6 +2,9 @@ from tkinter import *
 from random import randint
 
 
+
+
+
 #define costs of the pizza and toppings
 costSmall = 7.50
 costMedium = 10.00
@@ -10,7 +13,7 @@ costCheese = 1.00
 costPepperoni = 1.50
 costMushrooms = 1.25
 costPizza = 0.00
-costToppings = 0.00
+costTotal = 0.00
 MNTax = float(0.06875)
 
 
@@ -21,19 +24,39 @@ def Reset():
     entCustName.delete(0, END)
     lblCustCopy["text"] = ""
     entCustName.focus()
-    #lblCost["text"] = ""
     Size.set("")
-    chkToppings.deselect()
-    chkToppings1.deselect()
-    chkToppings2.deselect()
-    #lblOrderNumber["text"] = ""
+    for topping, toppingSelected, chkTopping in lstValues:
+        chkTopping.deselect()
     lstPaymentMethod.selection_clear(0, END)
-    #lblMNTax["text"] = "0.000"
+    lblSizeCost["text"] = "Size Cost: $0.00"
+    lblToppingsCost["text"] = "Toppings Cost: $0.00"
+    lblCostTotal["text"] = "Total: $0.00"
 def Process():
+    costToppings = 0.00
+    costSize = 0.00
     strCustName = entCustName.get()
     lblCustCopy["text"] = strCustName
     lblOrderNumber["text"] = f"Order Number: {randint(1000, 2000)}"
-    costTotal = int((costPizza + costToppings) * 1.06875)
+    if Size.get() == "small":
+        costSize = costSmall
+    elif Size.get() == "medium":
+        costSize = costMedium
+    elif Size.get() == "large":
+        costSize = costLarge
+    else:
+        costSize = 0.00
+    for topping, toppingSelected, chkTopping in lstValues:
+        if toppingSelected.get() == True:
+            if topping == "Cheese":
+                costToppings += costCheese
+            elif topping == "Pepperoni":
+                costToppings += costPepperoni
+            elif topping == "Mushrooms":
+                costToppings += costMushrooms
+    costTotal = float((costSize+ costToppings) * (1 + MNTax))
+    lblCostTotal["text"] = f"Total: ${costTotal:.2f}"
+    lblSizeCost["text"] = f"Size Cost: ${costSize:.2f}"
+    lblToppingsCost["text"] = f"Toppings Cost: ${costToppings:.2f}"
 
 
 
@@ -51,12 +74,12 @@ Size=StringVar()
 
 #Radio Button Creation
 
-radSize=Radiobutton(variable=Size, text="Small", value="small", fg="navy", bg="sky blue", font="Arial 12")
-radSize.place(x=20, y=280)
-radSize=Radiobutton(variable=Size, text="Medium", value="medium", fg="navy", bg="sky blue", font="Arial 12")
-radSize.place(x=20, y=330)
-radSize=Radiobutton(variable=Size, text="Large", value="large", fg="navy", bg="sky blue", font="Arial 12")
-radSize.place(x=20, y=380)
+radSizeSmall=Radiobutton(variable=Size, text="Small", value="small", fg="navy", bg="sky blue", font="Arial 12")
+radSizeSmall.place(x=20, y=280)
+radSizeMedium=Radiobutton(variable=Size, text="Medium", value="medium", fg="navy", bg="sky blue", font="Arial 12")
+radSizeMedium.place(x=20, y=330)
+radSizeLarge=Radiobutton(variable=Size, text="Large", value="large", fg="navy", bg="sky blue", font="Arial 12")
+radSizeLarge.place(x=20, y=380)
 #set the default value of the size to small using the varible=Size
 Size.set("small")
 
@@ -83,31 +106,31 @@ lblOrderNumber = Label(text='Order Number', font="Arial 12", bg="sky blue", fg="
 lblOrderNumber.place(x=1150, y=180)
 lblPaymentMethod = Label(text='Payment Method', font="Arial 12", bg="sky blue", fg="navy")
 lblPaymentMethod.place(x=1150, y=220)
-#lblCost = Label(text="Cost: $0.00", font="Arial 12", bg="sky blue", fg="navy")
-#lblCost.place(x=600, y=320)
 lblMNTax = Label(text="MN Sales Tax:6.875 ", font="Arial 12", bg="sky blue", fg="navy")
 lblMNTax.place(x=600, y=480)
-costTotal = Label(text=f"Total: $0.00", font="Arial 12", bg="sky blue", fg="navy")
-costTotal.place(x=600, y=520)
+lblCostTotal = Label(text="Total: $0.00", font="Arial 12", bg="sky blue", fg="navy")
+
+lblCostTotal.place(x=600, y=520)
 
 
 #Payment Method List Box
 lstPaymentMethod = Listbox(font="Arial 12", bg="white", fg="navy")
 lstPaymentMethod.place(x=1150, y=280)
 lstPaymentMethod.insert(END, "Cash")
-lstPaymentMethod.selection_set(0)
+lstPaymentMethod.selection_set(0) #cash set as default.
 lstPaymentMethod.insert(END, "Credit Card")
 lstPaymentMethod.insert(END, "Mobile Pay")
 lstPaymentMethod.insert(END, "Crypto")
 
-
-#Check Boxes
-chkToppings = Checkbutton(text='Cheese', font="Arial 12", bg="sky blue", fg="navy")
-chkToppings.place(x=300, y=280)
-chkToppings1 = Checkbutton(text='Pepperoni', font="Arial 12", bg="sky blue", fg="navy")
-chkToppings1.place(x=300, y=330)
-chkToppings2= Checkbutton(text='Mushrooms', font="Arial 12", bg="sky blue", fg="navy")
-chkToppings2.place(x=300, y=380)
+lstToppings = ["Cheese", "Pepperoni", "Mushrooms"]
+lstValues = []
+yCounter = 280
+for topping in lstToppings:
+    toppingSelected = BooleanVar()
+    chkTopping = Checkbutton(text=topping, font="Arial 12", bg="sky blue", fg="navy", variable=toppingSelected)
+    chkTopping.place(x=300, y=yCounter)
+    lstValues.append((topping, toppingSelected, chkTopping))
+    yCounter += 50
 
 
 #Form Creation
@@ -119,6 +142,7 @@ btnClose.place(x=850, y=600)
 btnProcess= Button(text="Process Order", font="Arial 12", bg="navy", fg="white", width=15, command=Process)
 btnProcess.place(x=300, y=600)
 entCustName.focus()
+#code that processes the totals of pizzas size, toppings, and tax.
 
 
 #Main Loop
